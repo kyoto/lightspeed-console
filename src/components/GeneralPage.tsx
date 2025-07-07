@@ -18,8 +18,6 @@ import {
   HelperTextItem,
   Label,
   LabelGroup,
-  Level,
-  LevelItem,
   Spinner,
   Split,
   SplitItem,
@@ -28,14 +26,13 @@ import {
   TextArea,
   Title,
 } from '@patternfly/react-core';
+import { ExternalLinkAltIcon, PaperPlaneIcon, StopIcon } from '@patternfly/react-icons';
 import {
-  CompressIcon,
-  ExpandIcon,
-  ExternalLinkAltIcon,
-  PaperPlaneIcon,
-  StopIcon,
-  WindowMinimizeIcon,
-} from '@patternfly/react-icons';
+  ChatbotHeader,
+  ChatbotHeaderActions,
+  ChatbotHeaderMain,
+  ChatbotHeaderTitle,
+} from '@patternfly/chatbot';
 
 import { toOLSAttachment } from '../attachments';
 import { getFetchErrorMessage } from '../error';
@@ -57,6 +54,7 @@ import AttachmentModal from './AttachmentModal';
 import AttachMenu from './AttachMenu';
 import AttachmentLabel from './AttachmentLabel';
 import CopyAction from './CopyAction';
+import WindowControlButtons from './WindowControlButtons';
 import ImportAction from './ImportAction';
 import Feedback from './Feedback';
 import NewChatModal from './NewChatModal';
@@ -65,6 +63,7 @@ import ResponseTools from './ResponseTools';
 import ToolModal from './ResponseToolModal';
 
 import './general-page.css';
+import '@patternfly/chatbot/dist/css/main.css';
 
 const QUERY_ENDPOINT = '/api/proxy/plugin/lightspeed-console-plugin/ols/v1/streaming_query';
 
@@ -600,53 +599,31 @@ const GeneralPage: React.FC<GeneralPageProps> = ({ onClose, onCollapse, onExpand
 
   return (
     <Stack hasGutter>
-      <StackItem
-        className={`ols-plugin__header${isWelcomePage ? ' ' : ' ols-plugin__header--with-title'}`}
-      >
-        {onExpand && (
-          <Button
-            className="ols-plugin__popover-control"
-            icon={<ExpandIcon />}
-            onClick={onExpand}
-            title={t('Expand')}
-            variant="plain"
-          />
-        )}
-        {onCollapse && (
-          <Button
-            className="ols-plugin__popover-control"
-            icon={<CompressIcon />}
-            onClick={onCollapse}
-            title={t('Collapse')}
-            variant="plain"
-          />
-        )}
-        <Button
-          className="ols-plugin__popover-control"
-          icon={<WindowMinimizeIcon />}
-          onClick={onClose}
-          title={t('Minimize')}
-          variant="plain"
-        />
-        {!isWelcomePage && (
-          <Level>
-            <LevelItem>
-              <Title className="ols-plugin__heading" headingLevel="h1">
-                {t('Red Hat OpenShift Lightspeed')}
-              </Title>
-            </LevelItem>
-            <LevelItem>
-              <Button
-                className="ols-plugin__popover-clear-chat"
-                onClick={openNewChatModal}
-                variant="primary"
-              >
-                {t('Clear chat')}
-              </Button>
-            </LevelItem>
-          </Level>
-        )}
-      </StackItem>
+      {isWelcomePage ? (
+        <StackItem>
+          <WindowControlButtons onClose={onClose} onCollapse={onCollapse} onExpand={onExpand} />
+        </StackItem>
+      ) : (
+        <StackItem>
+          <ChatbotHeader>
+            <ChatbotHeaderMain>
+              <ChatbotHeaderTitle className="ols-plugin__header-title">
+                <Title headingLevel="h1">{t('Red Hat OpenShift Lightspeed')}</Title>
+                <Button
+                  className="ols-plugin__popover-clear-chat"
+                  onClick={openNewChatModal}
+                  variant="primary"
+                >
+                  {t('Clear chat')}
+                </Button>
+              </ChatbotHeaderTitle>
+            </ChatbotHeaderMain>
+            <ChatbotHeaderActions>
+              <WindowControlButtons onClose={onClose} onCollapse={onCollapse} onExpand={onExpand} />
+            </ChatbotHeaderActions>
+          </ChatbotHeader>
+        </StackItem>
+      )}
 
       <StackItem
         aria-label={t('OpenShift Lightspeed chat history')}

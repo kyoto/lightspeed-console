@@ -81,7 +81,7 @@
 }
 
 .ols-plugin__popover-clear-chat {
-  margin-right: var(--pf-t--global--spacer--md);
+  margin-left: var(--pf-t--global--spacer--md);
 }
 
 .ols-plugin__popover-close, .ols-plugin__popover-control {
