@@ -22,6 +22,8 @@
 }
 
 .ols-plugin__popover {
+  --pf-t--chatbot--background: none;
+
   background-color: var(--pf-t--global--background--color--primary--default);
   border-radius: var(--popover-border-radius);
   border: var(--pf-t--global--border--width--regular) solid var(--pf-t--global--border--color--default);
