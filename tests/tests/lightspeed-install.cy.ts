@@ -18,8 +18,9 @@ const minimizeButton = `${popover} .ols-plugin__popover-control[title=Minimize]`
 const expandButton = `${popover} .ols-plugin__popover-control[title=Expand]`;
 const collapseButton = `${popover} .ols-plugin__popover-control[title=Collapse]`;
 const clearChatButton = `${popover} .ols-plugin__popover-clear-chat`;
-const userChatEntry = `${popover} .ols-plugin__chat-entry--user`;
-const aiChatEntry = `${popover} .ols-plugin__chat-entry--ai`;
+const userChatEntry = `${popover} .pf-chatbot__message--user`;
+const aiChatEntry = `${popover} .pf-chatbot__message--bot`;
+const loadingIndicator = `${popover} .pf-chatbot__message-loading`;
 const attachments = `${popover} .ols-plugin__prompt-attachments`;
 const attachMenuButton = `${popover} .ols-plugin__attach-menu`;
 const attachMenu = `${popover} .ols-plugin__context-menu`;
@@ -61,8 +62,6 @@ const USER_FEEDBACK_TEXT =
 const USER_FEEDBACK_RECEIVED_TEXT = 'Thank you for your feedback!';
 const THUMBS_DOWN = -1;
 const THUMBS_UP = 1;
-
-const WAITING_FOR_RESPONSE_TEXT = 'Waiting for LLM provider...';
 
 const MOCK_STREAMED_RESPONSE_TEXT = 'Mock OLS response';
 
@@ -301,7 +300,7 @@ spec:
 
     cy.interceptQuery('queryStub', PROMPT_SUBMITTED);
     cy.get(promptInput).type(`${PROMPT_SUBMITTED}{enter}`);
-    cy.get(popover).contains(WAITING_FOR_RESPONSE_TEXT);
+    cy.get(loadingIndicator).should('exist');
     cy.wait('@queryStub');
 
     // Prompt should now be empty
@@ -315,7 +314,7 @@ spec:
     const PROMPT_SUBMITTED_2 = 'Test prompt 2';
     cy.interceptQuery('queryWithConversationIdStub', PROMPT_SUBMITTED_2, CONVERSATION_ID);
     cy.get(promptInput).type(`${PROMPT_SUBMITTED_2}{enter}`);
-    cy.get(popover).contains(WAITING_FOR_RESPONSE_TEXT);
+    cy.get(loadingIndicator).should('exist');
     cy.wait('@queryWithConversationIdStub');
 
     cy.get(promptInput).should('have.value', '');
@@ -343,7 +342,7 @@ spec:
 
     cy.interceptQuery('queryStub', PROMPT_SUBMITTED);
     cy.get(promptInput).type(`${PROMPT_SUBMITTED}{enter}`);
-    cy.get(popover).contains(WAITING_FOR_RESPONSE_TEXT);
+    cy.get(loadingIndicator).should('exist');
     cy.wait('@queryStub');
 
     // Should have 3 response action buttons (thumbs up, thumbs down, and copy)
@@ -414,7 +413,7 @@ spec:
 
     cy.interceptQuery('queryStub', PROMPT_SUBMITTED);
     cy.get(promptInput).type(`${PROMPT_SUBMITTED}{enter}`);
-    cy.get(popover).contains(WAITING_FOR_RESPONSE_TEXT);
+    cy.get(loadingIndicator).should('exist');
     cy.wait('@queryStub');
 
     cy.get(copyButton)

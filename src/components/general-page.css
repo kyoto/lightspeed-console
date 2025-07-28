@@ -31,19 +31,6 @@
   margin-top: var(--pf-t--global--spacer--sm);
 }
 
-.ols-plugin__chat-entry--ai {
-  background-image: url('../assets/logo.svg');
-}
-
-/* stylelint-disable-next-line selector-disallowed-list */
-.pf-v6-theme-dark .ols-plugin__chat-entry--ai {
-  background-image: url('../assets/logo-dark.svg');
-}
-
-.ols-plugin__chat-entry--user {
-  background-image: url('../assets/user.png');
-}
-
 .ols-plugin__chat-entry-name {
   font-weight: bold;
 }
@@ -102,19 +89,10 @@
   font-weight: var(--pf-v5-global--FontWeight--bold);
 }
 
-.ols-plugin__feedback {
-  margin-top: var(--pf-t--global--spacer--sm);
-}
-
-.ols-plugin__feedback-comment {
-  border: var(--pf-t--global--border--width--regular) solid var(--pf-t--global--border--color--default);
-  margin-top: var(--pf-t--global--spacer--md);
-  padding: var(--pf-t--global--spacer--lg);
-  position: relative;
-}
-
-.ols-plugin__feedback-footer {
-  margin-bottom: var(--pf-t--global--spacer--md);
+.ols-plugin__feedback h6 {
+  color: var(--pf-t--global--text--color--subtle);
+  font-size: var(--pf-t--global--font--size--body--sm);
+  font-weight: var(--pf-t--global--font--weight--body--default);
 }
 
 .ols-plugin__response-action {
@@ -218,10 +196,6 @@
 
 .ols-plugin__radio {
   align-items: center;
-}
-
-.ols-plugin__references {
-  margin-top: var(--pf-t--global--spacer--md);
 }
 
 .ols-plugin__welcome-logo {
