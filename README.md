@@ -181,6 +181,79 @@ best practice is to prefix your CSS classnames with your plugin name to avoid
 conflicts. Please don't disable these rules without understanding how they can
 break console styles!
 
+## Opening the OpenShift Lightspeed UI from other console pages and plugins
+
+Other OpenShift console pages and plugins can open the OpenShift Lightspeed UI
+with an optional initial query using the extension discovery pattern.
+
+**Step 1:** Create a type guard for the extension (recommended for type safety)
+
+```typescript
+import {
+  Extension,
+  ExtensionDeclaration,
+} from '@openshift-console/dynamic-plugin-sdk/lib/types';
+
+type OpenOLSHandlerProps = {
+  contextId: string;
+  provider: () => (prompt?: string) => void;
+};
+
+type OpenOLSHandlerExtension = ExtensionDeclaration<
+  'console.action/provider',
+  OpenOLSHandlerProps
+>;
+
+// Type guard for OpenShift Lightspeed open handler extensions
+const isOpenOLSHandlerExtension = (
+  e: Extension,
+): e is OpenOLSHandlerExtension =>
+  e.type === 'console.action/provider' &&
+  e.properties?.contextId === 'ols-open-handler';
+```
+
+**Step 2:** Use the extension in your component
+
+```typescript
+import { useResolvedExtensions } from '@openshift-console/dynamic-plugin-sdk';
+
+const MyComponent: React.FC = () => {
+  const [extensions, resolved] = useResolvedExtensions(isOpenOLSHandlerExtension);
+
+  // Get the hook from the extension (should only be one)
+  const useOpenOLS = (resolved ? extensions[0]?.properties?.provider : undefined) as
+    | (() => (prompt?: string) => void)
+    | undefined;
+  const openOLS = useOpenOLS?.();
+
+  return (
+    <Button onClick={() => openOLS?.('How do I scale my deployment?')}>
+      Ask Lightspeed
+    </Button>
+  );
+};
+```
+
+### Function signature
+
+```typescript
+openOLS(prompt?: string): void
+```
+
+### Parameters
+
+- `prompt` (optional): A string containing the initial text prompt
+
+### Examples
+
+```typescript
+// Open Lightspeed with no initial query
+openOLS();
+
+// Open Lightspeed with a specific question
+openOLS('How do I create a pod?');
+```
+
 ## References
 
 - [Console Plugin SDK README](https://github.com/openshift/console/tree/main/frontend/packages/console-dynamic-plugin-sdk)
