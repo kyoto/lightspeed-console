@@ -39,7 +39,7 @@
         "eslint",
         "node",
         "react-markdown",
-        "react-router-dom-v5-compat",
+        "react-router",
         "remark-gfm"
       ],
       "matchUpdateTypes": ["major"],

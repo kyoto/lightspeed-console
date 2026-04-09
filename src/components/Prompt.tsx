@@ -34,7 +34,7 @@ import {
   TaskIcon,
   WrenchIcon,
 } from '@patternfly/react-icons';
-import { useLocation } from 'react-router-dom-v5-compat';
+import { useLocation } from 'react-router';
 
 import { AttachmentTypes, toOLSAttachment } from '../attachments';
 import { getApiUrl } from '../config';
@@ -764,7 +764,6 @@ const Prompt: React.FC<PromptProps> = ({ scrollIntoView }) => {
 
   return (
     <div>
-      {/* @ts-expect-error: TS2786 */}
       <MessageBar
         additionalActions={
           <Select
