@@ -32,10 +32,12 @@ import {
   FileCodeIcon,
   FileUploadIcon,
   InfoCircleIcon,
+  OutlinedCommentIcon,
   PaperPlaneIcon,
   PlusCircleIcon,
   StopIcon,
   TaskIcon,
+  WrenchIcon,
 } from '@patternfly/react-icons';
 
 import { AttachmentTypes, toOLSAttachment } from '../attachments';
@@ -53,6 +55,7 @@ import {
   setAutoSubmit,
   setConversationID,
   setHidePrompt,
+  setIsTroubleshooting,
   setQuery,
 } from '../redux-actions';
 import { State } from '../redux-reducers';
@@ -484,8 +487,12 @@ const Prompt: React.FC<PromptProps> = ({ scrollIntoView }) => {
   );
   const conversationID: string = useSelector((s: State) => s.plugins?.ols?.get('conversationID'));
   const hidePrompt: boolean = useSelector((s: State) => s.plugins?.ols?.get('hidePrompt'));
+  const isTroubleshooting: boolean = useSelector((s: State) =>
+    s.plugins?.ols?.get('isTroubleshooting'),
+  );
   const query: string = useSelector((s: State) => s.plugins?.ols?.get('query'));
 
+  const [isModeMenuOpen, setIsModeMenuOpen] = React.useState<boolean>(false);
   const [validated, setValidated] = React.useState<'default' | 'error'>('default');
   const [streamController, setStreamController] = React.useState(new AbortController());
 
@@ -736,8 +743,58 @@ const Prompt: React.FC<PromptProps> = ({ scrollIntoView }) => {
     [onSubmit],
   );
 
+  const modeMenuToggle = React.useCallback(
+    (toggleRef: React.Ref<MenuToggleElement>) => (
+      <MenuToggle
+        data-test="ols-plugin__mode-toggle"
+        icon={isTroubleshooting ? <WrenchIcon /> : <OutlinedCommentIcon />}
+        isExpanded={isModeMenuOpen}
+        onClick={() => setIsModeMenuOpen(!isModeMenuOpen)}
+        ref={toggleRef}
+        variant="plainText"
+      >
+        {isTroubleshooting ? t('Troubleshooting') : t('Ask')}
+      </MenuToggle>
+    ),
+    [isModeMenuOpen, isTroubleshooting, t],
+  );
+
+  const onModeMenuSelect = React.useCallback(
+    (_ev: React.MouseEvent, value: string) => {
+      dispatch(setIsTroubleshooting(value === 'troubleshooting'));
+      setIsModeMenuOpen(false);
+    },
+    [dispatch],
+  );
+
   return (
     <Form onSubmit={isStreaming ? onStreamCancel : onSubmit}>
+      <Select
+        isOpen={isModeMenuOpen}
+        onOpenChange={setIsModeMenuOpen}
+        onSelect={onModeMenuSelect}
+        selected={isTroubleshooting ? 'troubleshooting' : 'ask'}
+        toggle={modeMenuToggle}
+      >
+        <SelectList>
+          <SelectOption
+            description={t('Expert guidance and clear answers')}
+            icon={<OutlinedCommentIcon />}
+            isSelected={!isTroubleshooting}
+            value="ask"
+          >
+            {t('Ask')}
+          </SelectOption>
+          <SelectOption
+            description={t('Diagnosing issues and finding solutions')}
+            icon={<WrenchIcon />}
+            isSelected={isTroubleshooting}
+            value="troubleshooting"
+          >
+            {t('Troubleshooting')}
+          </SelectOption>
+        </SelectList>
+      </Select>
       <Split hasGutter>
         <SplitItem>
           <AttachMenu />
@@ -756,7 +813,11 @@ const Prompt: React.FC<PromptProps> = ({ scrollIntoView }) => {
               }
             }}
             onKeyPress={onKeyPress}
-            placeholder={t('Send a message...')}
+            placeholder={
+              isTroubleshooting
+                ? t("Describe the issue you're troubleshooting...")
+                : t('Ask a question...')
+            }
             ref={promptRef}
             resizeOrientation="vertical"
             rows={Math.min(query.split('\n').length, 12)}

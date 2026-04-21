@@ -25,6 +25,7 @@ const attachButton = `${popover} .ols-plugin__attach-menu`;
 const attachMenu = `${popover} .ols-plugin__context-menu`;
 const promptAttachment = `${attachments} .ols-plugin__context-label`;
 const fileInput = '[data-test="ols-plugin__file-upload"]';
+const modeToggle = `${popover} [data-test="ols-plugin__mode-toggle"]`;
 const promptInput = `${popover} textarea`;
 const userFeedback = `${popover} .ols-plugin__feedback`;
 const responseAction = `${userFeedback} .ols-plugin__response-action`;
@@ -355,6 +356,34 @@ spec:
       cy.get(userChatEntry).should('contain', PROMPT_SUBMITTED);
       cy.get(aiChatEntry).should('exist');
       cy.get(promptInput).should('contain', PROMPT_NOT_SUBMITTED);
+    });
+
+    it('Test Troubleshooting mode persists after reopening the UI', () => {
+      cy.visit('/search/all-namespaces');
+      cy.get('h1').contains('Search').should('exist');
+      cy.get(mainButton).click();
+      cy.get(popover).should('exist');
+
+      cy.get(modeToggle).should('include.text', 'Ask');
+      cy.get(modeToggle).click();
+      cy.get(popover).find('button').contains('Troubleshooting').click();
+      cy.get(modeToggle).should('include.text', 'Troubleshooting');
+
+      cy.get(minimizeButton).click();
+      cy.get(popover).should('not.exist');
+      cy.get(mainButton).click();
+      cy.get(popover).should('exist');
+      cy.get(modeToggle).should('include.text', 'Troubleshooting');
+
+      cy.get(modeToggle).click();
+      cy.get(popover).find('button').contains('Ask').click();
+      cy.get(modeToggle).should('include.text', 'Ask');
+
+      cy.get(minimizeButton).click();
+      cy.get(popover).should('not.exist');
+      cy.get(mainButton).click();
+      cy.get(popover).should('exist');
+      cy.get(modeToggle).should('include.text', 'Ask');
     });
   });
 
